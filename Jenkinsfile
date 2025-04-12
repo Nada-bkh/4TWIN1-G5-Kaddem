@@ -8,6 +8,14 @@ pipeline {
     }
 
     stages {
+         stage('Docker Test') {
+                steps {
+                    script {
+                        sh 'docker --version'
+                    }
+                }
+            }
+
         stage('Checkout') {
             steps {
                 checkout scm
