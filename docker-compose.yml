@@ -11,6 +11,8 @@ services:
       MYSQL_DATABASE: kaddem_db
     ports:
       - "3306:3306"
+    networks:
+      - kaddem-net
 
   spring-app:
     build: .
@@ -23,3 +25,39 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/kaddem_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+    networks:
+      - kaddem-net
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysql-exporter
+    environment:
+      DATA_SOURCE_NAME: root:root@(mysql-db:3306)/
+    ports:
+      - "9104:9104"
+    depends_on:
+      - mysql-db
+    networks:
+      - kaddem-net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - kaddem-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - kaddem-net
+
+networks:
+  kaddem-net:
+
