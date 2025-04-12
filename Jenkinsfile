@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+            label 'agent'
+        }
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
@@ -8,14 +10,6 @@ pipeline {
     }
 
     stages {
-         stage('Docker Test') {
-                steps {
-                    script {
-                        sh 'docker --version'
-                    }
-                }
-            }
-
         stage('Checkout') {
             steps {
                 checkout scm
