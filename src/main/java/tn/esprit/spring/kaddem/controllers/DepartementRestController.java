@@ -16,6 +16,8 @@ public class DepartementRestController {
 
 	private final IDepartementService departementService;
 
+	//this line is added to test jenkins
+
 	// GET http://localhost:8089/Kaddem/departement/retrieve-all-departements
 	@GetMapping("/retrieve-all-departements")
 	public List<Departement> getDepartements() {
