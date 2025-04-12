@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-            docker {
-                image 'maven:3.8.8-openjdk-17'
-                args '-v /root/.m2:/root/.m2'
-            }
-        }
+    agent any
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
@@ -15,21 +10,33 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                script {
+                    docker.image('maven:3.8.8-openjdk-17').inside('-v /root/.m2:/root/.m2') {
+                        sh 'mvn clean install'
+                    }
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+                script {
+                    docker.image('maven:3.8.8-openjdk-17').inside('-v /root/.m2:/root/.m2') {
+                        withSonarQubeEnv('SonarQube') {
+                            sh 'mvn sonar:sonar'
+                        }
+                    }
                 }
             }
         }
 
         stage('Deploy to Nexus') {
             steps {
-                sh 'mvn deploy'
+                script {
+                    docker.image('maven:3.8.8-openjdk-17').inside('-v /root/.m2:/root/.m2') {
+                        sh 'mvn deploy'
+                    }
+                }
             }
         }
 
