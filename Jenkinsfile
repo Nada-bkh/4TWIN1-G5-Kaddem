@@ -11,13 +11,11 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
-        stage('Deploy to Nexus') {
+       stage('Deploy to Nexus') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                    sh 'mvn deploy -X -DskipTests -DaltDeploymentRepository=nexus::default::http://localhost:8081/repository/kaddem-snapshots/ -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD -Dmaven.wagon.httpclient.timeout=600 -e'
-                }
-            }
-        }
+                sh 'mvn deploy -X -DskipTests -DaltDeploymentRepository=nexus::default::http://localhost:8081/repository/kaddem-snapshots/ -Dmaven.wagon.httpclient.timeout=600 -e'
+    }
+}
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
