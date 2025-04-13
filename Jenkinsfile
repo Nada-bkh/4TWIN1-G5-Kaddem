@@ -14,7 +14,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') { // 'SonarQube' should match your SonarQube server name in Jenkins
-                    sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9090 -Dsonar.login=admin -Dsonar.password=admin123'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin123'
                 }
             }
         }
