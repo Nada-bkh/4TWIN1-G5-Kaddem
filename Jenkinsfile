@@ -13,8 +13,8 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=kaddem -Dsonar.host.url=http://localhost:9000'
+                withSonarQubeEnv('SonarQube') { // 'SonarQube' should match your SonarQube server name in Jenkins
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9090 -Dsonar.login=admin -Dsonar.password=admin123'
                 }
             }
         }
@@ -26,12 +26,10 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 sh 'docker build -t hamzambarki/kaddem:latest .'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh '''
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        docker push hamzambarki/kaddem:latest
-                    '''
-                }
+                sh '''
+                    echo "your_docker_password" | docker login -u "your_docker_username" --password-stdin
+                    docker push hamzambarki/kaddem:latest
+                '''
             }
         }
     }
