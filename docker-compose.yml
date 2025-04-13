@@ -16,6 +16,7 @@ services:
 
   spring-app:
     build: .
+    image: benjdidiahabib-g5-kaddem  # <-- C'est ici que tu mets ton nom d'image Docker perso
     container_name: spring-kaddem
     depends_on:
       - mysql-db
