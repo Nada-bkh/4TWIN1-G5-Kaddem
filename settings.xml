@@ -3,25 +3,28 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
           https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-    <servers>
-        <server>
-            <id>nexus</id>
-            <username>admin</username>
-            <password>root</password>
-        </server>
-    </servers>
+  <!-- Authentification Nexus -->
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>root</password>
+    </server>
+  </servers>
 
-    <profiles>
-        <profile>
-            <id>nexus</id>
-            <properties>
-                <altDeploymentRepository>nexus::default::http://localhost:8081/repository/maven-snapshots/</altDeploymentRepository>
-            </properties>
-        </profile>
-    </profiles>
+  <!-- Configuration du dépôt pour deploy -->
+  <profiles>
+    <profile>
+      <id>nexus</id>
+      <properties>
+        <altDeploymentRepository>nexus::default::http://localhost:8081/repository/maven-snapshots/</altDeploymentRepository>
+      </properties>
+    </profile>
+  </profiles>
 
-    <activeProfiles>
-        <activeProfile>nexus</activeProfile>
-    </activeProfiles>
+  <!-- Activer le profil nexus -->
+  <activeProfiles>
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
 
 </settings>
