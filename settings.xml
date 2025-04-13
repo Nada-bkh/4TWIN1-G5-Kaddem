@@ -3,6 +3,7 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
           https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
+    <!-- Authentification Nexus -->
     <servers>
         <server>
             <id>nexus</id>
@@ -11,6 +12,7 @@
         </server>
     </servers>
 
+    <!-- Configuration du dépôt pour deploy -->
     <profiles>
         <profile>
             <id>nexus</id>
@@ -20,6 +22,7 @@
         </profile>
     </profiles>
 
+    <!-- Activer le profil nexus -->
     <activeProfiles>
         <activeProfile>nexus</activeProfile>
     </activeProfiles>
