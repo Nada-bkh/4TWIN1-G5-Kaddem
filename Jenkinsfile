@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        SONARQUBE = 'SonarQube-Local'
+        SONARQUBE = 'MelekKaddem'
     }
 
     stages {
