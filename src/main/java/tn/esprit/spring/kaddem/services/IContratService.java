@@ -5,23 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 public interface IContratService {
-    public List<Contrat> retrieveAllContrats();
-
-    public Contrat updateContrat (Contrat  ce);
-
-    public  Contrat addContrat (Contrat ce);
-
-    public Contrat retrieveContrat (Integer  idContrat);
-
-    public  void removeContrat(Integer idContrat);
-
-    public Contrat affectContratToEtudiant (Integer idContrat, String nomE, String prenomE);
-
-        public 	Integer nbContratsValides(Date startDate, Date endDate);
-
-
-    public float getChiffreAffaireEntreDeuxDates(Date startDate, Date endDate);
-
-    public void retrieveAndUpdateStatusContrat();
+    List<Contrat> retrieveAllContrats();
+    Contrat updateContrat(Contrat ce);
+    Contrat addContrat(Contrat ce);
+    Contrat retrieveContrat(Integer idContrat);
+    void removeContrat(Integer idContrat);
+    Contrat affectContratToEtudiant(Integer idContrat, String nomE, String prenomE);
+    Integer nbContratsValides(Date startDate, Date endDate);
+    float getChiffreAffaireEntreDeuxDates(Date startDate, Date endDate);
+    void countActiveContrats(); // Replaced
 }
-
