@@ -25,22 +25,28 @@ pipeline {
                 sh 'mvn deploy'
             }
         }
-    }
-        stage("Run Prometheus") {
+
+        stage('Run Prometheus') {
             steps {
                 script {
-                    sh 'docker start prometheus  docker run -d --name prometheus -p 9090:9090 -v ${WORKSPACE}/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus'
+                    sh '''
+                        docker start prometheus || docker run -d --name prometheus -p 9090:9090 -v ${WORKSPACE}/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+                    '''
                 }
             }
         }
 
-        stage("Run Grafana") {
+        stage('Run Grafana') {
             steps {
                 script {
-                    sh 'docker start grafana  docker run -d --name grafana -p 3000:3000 grafana/grafana'
+                    sh '''
+                        docker start grafana || docker run -d --name grafana -p 3000:3000 grafana/grafana
+                    '''
                 }
             }
         }
+    }
+
     post {
         success {
             echo 'Pipeline exécuté avec succès.'
