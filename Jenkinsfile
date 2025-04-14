@@ -8,7 +8,8 @@ pipeline {
     environment {
         IMAGE_NAME = "benjdidiahabib-4twin1-g5-kaddem"
         IMAGE_TAG = "latest"
-        NEXUS_URL = "localhost:8081/repository/docker-releases"
+        NEXUS_URL = "localhost:8081"
+        NEXUS_REPOSITORY = "repository/docker-releases"
     }
 
     stages {
@@ -37,9 +38,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${NEXUS_URL}/${NEXUS_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
                         echo $NEXUS_PASS | docker login ${NEXUS_URL} -u $NEXUS_USER --password-stdin
-                        docker push ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${NEXUS_URL}/${NEXUS_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
             }
@@ -47,21 +48,17 @@ pipeline {
 
         stage('Run Prometheus') {
             steps {
-                script {
-                    sh '''
-                        docker start prometheus || echo "Prometheus already running"
-                    '''
-                }
+                sh '''
+                    docker start prometheus || echo "Prometheus already running"
+                '''
             }
         }
 
         stage('Run Grafana') {
             steps {
-                script {
-                    sh '''
-                        docker start grafana || echo "Grafana already running"
-                    '''
-                }
+                sh '''
+                    docker start grafana || echo "Grafana already running"
+                '''
             }
         }
     }
