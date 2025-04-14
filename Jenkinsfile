@@ -45,15 +45,21 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                sh '''
+                docker-compose down || true
+                docker rm -f $(docker ps -aq) || true
+                docker volume prune -f || true
+                docker network prune -f || true
+                docker-compose up -d
+                '''
             }
         }
 
         stage('API Tests') {
             steps {
                 sh '''
-                sleep 10
+                echo "Waiting for containers to start..."
+                sleep 15
                 curl -X POST http://localhost:8089/kaddem/equipe/add-equipe -H "Content-Type: application/json" -d '{"nomEquipe":"TEST","niveau":"JUNIOR"}'
                 curl -X GET http://localhost:8089/kaddem/equipe/retrieve-all-equipes
                 '''
