@@ -37,9 +37,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=Kaddem-key -Dsonar.login=$SONAR_TOKEN'
-                }
+
+                sh 'mvn sonar:sonar -Dsonar.projectKey=Kaddem-key -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN}'
             }
         }
 
