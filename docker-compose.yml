@@ -5,7 +5,6 @@ services:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: kaddem
     ports:
       - "3306:3306"
