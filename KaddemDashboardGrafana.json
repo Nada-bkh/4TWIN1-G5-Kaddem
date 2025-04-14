@@ -1,0 +1,72 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "prometheus-cpu-memory-dashboard",
+    "title": "Prometheus CPU & Memory Usage",
+    "tags": [],
+    "timezone": "browser",
+    "schemaVersion": 26,
+    "version": 1,
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "avg(rate(cpu_seconds_total{mode='idle'}[1m])) by (instance)",
+            "interval": "",
+            "intervalFactor": 2,
+            "legendFormat": "{{instance}}",
+            "refId": "A"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxis": {
+          "format": "percent",
+          "min": 0,
+          "max": 100
+        },
+        "lines": true,
+        "linewidth": 2,
+        "nullPointMode": "null",
+        "stack": false,
+        "percentage": true
+      },
+      {
+        "type": "graph",
+        "title": "Memory Usage",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "1 - (avg(mem_free_bytes) / avg(mem_total_bytes))",
+            "interval": "",
+            "intervalFactor": 2,
+            "legendFormat": "{{instance}}",
+            "refId": "B"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxis": {
+          "format": "percent",
+          "min": 0,
+          "max": 100
+        },
+        "lines": true,
+        "linewidth": 2,
+        "nullPointMode": "null",
+        "stack": false,
+        "percentage": true
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}
