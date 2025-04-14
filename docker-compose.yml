@@ -23,7 +23,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD:
+      SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: true
     ports:
@@ -49,5 +49,22 @@ services:
     depends_on:
       - prometheus
 
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:mysql://mysql:3306/sonar?useUnicode=true&characterEncoding=utf8
+      SONAR_JDBC_USERNAME: root
+      SONAR_JDBC_PASSWORD: root
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+    depends_on:
+      - mysql
+
 volumes:
   mysql-data:
+  sonarqube_data:
+  sonarqube_logs:
