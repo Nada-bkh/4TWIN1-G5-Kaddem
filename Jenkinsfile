@@ -14,12 +14,12 @@ pipeline {
         }
         stage('Build JAR') {
             steps {
-                sh 'echo "hamza" | sudo -S mvn clean package'
+                sh 'mvn clean package'
             }
         }
         stage('Build Docker Images') {
             steps {
-                sh 'echo "hamza" | sudo -S docker-compose build'
+                sh 'docker-compose build'
             }
         }
         stage('Login to DockerHub') {
@@ -31,12 +31,12 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                sh 'echo "hamza" | sudo -S docker-compose push'
+                sh 'docker-compose push'
             }
         }
         stage('Deploy') {
             steps {
-                sh 'echo "hamza" | sudo -S docker-compose up -d'
+                sh 'docker-compose up -d'
             }
         }
         stage('Verify Prometheus Metrics') {
@@ -55,7 +55,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'echo "hamza" | sudo -S mvn sonar:sonar -Dsonar.host.url=http://192.168.33.134:9000 -Dsonar.login=admin -Dsonar.password=admin123'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.33.134:9000 -Dsonar.login=admin -Dsonar.password=admin123'
                 }
             }
         }
