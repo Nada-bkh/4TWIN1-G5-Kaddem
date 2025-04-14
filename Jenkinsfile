@@ -8,6 +8,7 @@ pipeline {
     environment {
         NEXUS_REPO = 'http://10.0.2.15:8081/repository/maven-snapshots/'
         SONARQUBE = 'MelekKaddem'
+        NEXUS_URL = 'http://10.0.2.15:8081'
     }
 
     stages {
@@ -40,20 +41,30 @@ pipeline {
                     }
                 }
 
-        stage('Publish to Nexus') {
+        stage('Build and Deploy to Nexus') {
+                  steps {
+                      withMaven(globalMavenSettingsConfig: '2482651b-f6c0-46f7-b920-9ea07832b08f') {
+                          sh '''
+                              mvn clean package deploy \
+                              -DaltDeploymentRepository=4TWIN1-G5-Kaddem::default::${NEXUS_URL}/repository/4TWIN1-G5-Kaddem/ \
+                              -X
+                          '''
+                      }
+                  }
+              }
+
+
+        stage('Push to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
-                        mvn deploy -DskipTests \\
-                        -DaltDeploymentRepository=nexus::default::${NEXUS_REPO} \\
-                        -Dnexus.user=\$NEXUS_USER \\
-                        -Dnexus.password=\$NEXUS_PASS
+                        docker tag kaddem-app:${env.BUILD_NUMBER} melekjdidi/kaddem:0.0.1
+                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                        docker push melekjdidi/kaddem:0.0.1
                     """
                 }
             }
         }
-
-
 
     }
 }
