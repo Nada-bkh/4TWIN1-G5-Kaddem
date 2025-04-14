@@ -5,6 +5,7 @@ pipeline {
             steps {
                 cleanWs()
                 git branch: 'hamzambarki-4TWIN1-G5-pipeline', url: 'https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git'
+                sh 'ls -la' // Debug: List files after checkout
             }
         }
         stage('Build') {
