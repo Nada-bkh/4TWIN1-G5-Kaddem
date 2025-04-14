@@ -30,17 +30,11 @@ pipeline {
             }
         }
 
-/*         stage('Deploy to Nexus') {
-            steps {
-                sh 'mvn clean deploy -DskipTests '
-            }
-        } */
-
         stage('Deploy to Nexus') {
           steps {
                  sh "mvn clean deploy -DskipTests"
             }
-          }
+
         }
 
     }
