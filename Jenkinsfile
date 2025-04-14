@@ -29,6 +29,16 @@ pipeline {
                 '''
             }
         }
+        stage('Pull Images') {
+            steps {
+                sh '''
+                   docker pull mysql:8.0
+                   docker pull prom/prometheus
+                   docker pull grafana/grafana
+                   docker pull sonarqube:community
+                '''
+            }
+        }
         stage('Push Docker Image') {
             steps {
                 sh 'docker-compose push'
