@@ -109,7 +109,7 @@
 
 <repository>
 
-<id>deploymentRepo</id>
+<id>nexus</id>
 
 <name>Nexus Repository</name>
 
