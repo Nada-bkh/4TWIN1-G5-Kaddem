@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE_NAME = 'benjdidiahabib-4twin1-g5-kaddem'
-        NEXUS_URL = 'localhost:8081'
-        NEXUS_REPO = 'docker-releases'
+        IMAGE_NAME = "benjdidiahabib-4twin1-g5-kaddem"
+        IMAGE_TAG = "latest"
+        NEXUS_URL = "localhost:5000"
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
+                    sh 'mvn sonar:sonar -Dsonar.token=$SONAR_TOKEN'
                 }
             }
         }
@@ -35,25 +35,33 @@ pipeline {
         stage('Docker Build & Push to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                    sh """
-                        docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} .
-                        docker tag ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ${NEXUS_URL}/${NEXUS_REPO}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
+                    sh '''
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
                         echo $NEXUS_PASS | docker login ${NEXUS_URL} -u $NEXUS_USER --password-stdin
-                        docker push ${NEXUS_URL}/${NEXUS_REPO}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
-                    """
+                        docker push ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+                    '''
                 }
             }
         }
 
         stage('Run Prometheus') {
             steps {
-                sh 'docker start prometheus || echo "Prometheus already running"'
+                script {
+                    sh '''
+                        docker start prometheus || echo "Prometheus already running"
+                    '''
+                }
             }
         }
 
         stage('Run Grafana') {
             steps {
-                sh 'docker start grafana || echo "Grafana already running"'
+                script {
+                    sh '''
+                        docker start grafana || echo "Grafana already running"
+                    '''
+                }
             }
         }
     }
