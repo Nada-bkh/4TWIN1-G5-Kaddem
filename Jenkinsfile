@@ -33,7 +33,17 @@ pipeline {
                 sh 'docker-compose push'
             }
         }
-        stage('Deploy with Docker Compose') {
+ stage('Build JAR') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+        stage('Deploy') {
             steps {
                 sh 'docker-compose up -d'
             }
@@ -58,12 +68,7 @@ pipeline {
                 }
             }
         }
-               stage('Build') {
-            steps {
-                sh 'mvn clean install -DskipTests'
-                sh 'ls -la target/'
-            }
-        }
+
 
     }
 }

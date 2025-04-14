@@ -8,7 +8,6 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.Set;
 
-import jakarta.persistence.*; // Changed from javax.persistence
 
 import javax.persistence.*;
 
