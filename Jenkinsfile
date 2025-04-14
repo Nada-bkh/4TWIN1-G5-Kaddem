@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Build') {
             steps {
                 sh 'mvn clean install'
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        docker start prometheus || docker run -d --name prometheus -p 9090:9090 -v ${WORKSPACE}/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+                        docker start prometheus || echo "Prometheus already running"
                     '''
                 }
             }
@@ -40,7 +41,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        docker start grafana || docker run -d --name grafana -p 3000:3000 grafana/grafana
+                        docker start grafana || echo "Grafana already running"
                     '''
                 }
             }
@@ -54,6 +55,7 @@ pipeline {
                  subject: "Pipeline SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Good Job! The pipeline succeeded."
         }
+
         failure {
             echo 'Le pipeline a échoué.'
             mail to: 'benjdidiahabib15@gmail.com',
