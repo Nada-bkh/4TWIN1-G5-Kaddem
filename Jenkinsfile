@@ -18,13 +18,7 @@ pipeline {
                 sh 'ls -la target/'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.33.134:9000 -Dsonar.login=admin -Dsonar.password=admin123'
-                }
-            }
-        }
+
 
         stage('Build Docker Images') {
             steps {
@@ -46,6 +40,13 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
+            }
+        }
+               stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.33.134:9000 -Dsonar.login=admin -Dsonar.password=admin123'
+                }
             }
         }
     }
