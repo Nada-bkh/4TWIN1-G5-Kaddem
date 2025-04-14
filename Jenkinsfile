@@ -5,9 +5,14 @@ pipeline {
         maven 'Maven'
     }
 
-    stages {
+    environment {
+        DOCKER_IMAGE_NAME = 'benjdidiahabib-4twin1-g5-kaddem'
+        NEXUS_URL = 'localhost:8081'
+        NEXUS_REPO = 'docker-releases'
+    }
 
-        stage('Build') {
+    stages {
+        stage('Build et Test') {
             steps {
                 sh 'mvn clean install'
             }
@@ -21,29 +26,34 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nexus') {
+        stage('Deploy JAR to Nexus') {
             steps {
                 sh 'mvn deploy'
             }
         }
 
+        stage('Docker Build & Push to Nexus') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh """
+                        docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} .
+                        docker tag ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ${NEXUS_URL}/${NEXUS_REPO}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
+                        echo $NEXUS_PASS | docker login ${NEXUS_URL} -u $NEXUS_USER --password-stdin
+                        docker push ${NEXUS_URL}/${NEXUS_REPO}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+
         stage('Run Prometheus') {
             steps {
-                script {
-                    sh '''
-                        docker start prometheus || echo "Prometheus already running"
-                    '''
-                }
+                sh 'docker start prometheus || echo "Prometheus already running"'
             }
         }
 
         stage('Run Grafana') {
             steps {
-                script {
-                    sh '''
-                        docker start grafana || echo "Grafana already running"
-                    '''
-                }
+                sh 'docker start grafana || echo "Grafana already running"'
             }
         }
     }
