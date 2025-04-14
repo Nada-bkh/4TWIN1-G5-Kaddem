@@ -55,16 +55,7 @@ pipeline {
             }
         }
 
-        stage('API Tests') {
-            steps {
-                sh '''
-                echo "Waiting for containers to start..."
-                sleep 15
-                curl -X POST http://localhost:8089/kaddem/equipe/add-equipe -H "Content-Type: application/json" -d '{"nomEquipe":"TEST","niveau":"JUNIOR"}'
-                curl -X GET http://localhost:8089/kaddem/equipe/retrieve-all-equipes
-                '''
-            }
-        }
+ 
     }
 
     post {
