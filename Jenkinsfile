@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3' // nom de l'outil Maven défini dans Jenkins
+        maven 'Maven3'
     }
 
     environment {
         SONARQUBE = 'MelekKaddem'
-        MAVEN_HOME = tool 'Maven' // Assure-toi que ce nom est exact dans Jenkins
+        
     }
 
     stages {
@@ -31,15 +31,12 @@ pipeline {
             }
         }
 
-        stage('Build & Deploy to Nexus') {
-            steps {
-                withMaven(
-                    maven: 'Maven', // nom exact configuré dans Jenkins
-                    mavenSettingsConfig: 'nexus-settings' // ID du settings.xml Nexus dans "Managed Files"
-                ) {
-                    sh 'mvn clean deploy -DskipTests'
-                }
+        stage('Deploy to Nexus') {
+          steps {
+                 sh "mvn clean deploy -DskipTests"
             }
+
         }
+
     }
 }
