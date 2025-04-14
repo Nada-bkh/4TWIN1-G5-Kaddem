@@ -20,19 +20,7 @@ pipeline {
         }
 
 
-                stage('Verify Prometheus Metrics') {
-            steps {
-                script {
-                    retry(5) {
-                        sleep 10
-                        def prometheus_url = 'http://192.168.33.134:9090/api/v1/query'
-                        def query = 'up{job="spring-boot-application"}'
-                        def response = sh(script: "curl -s '${prometheus_url}?query=${URLEncoder.encode(query, "UTF-8")}'", returnStdout: true)
-                        echo "Prometheus Response: ${response}"
-                    }
-                }
-            }
-        }
+
         stage('Build Docker Images') {
             steps {
                 sh 'docker-compose build'
@@ -53,6 +41,19 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 sh 'docker-compose up -d'
+            }
+        }
+                        stage('Verify Prometheus Metrics') {
+            steps {
+                script {
+                    retry(5) {
+                        sleep 10
+                        def prometheus_url = 'http://192.168.33.134:9090/api/v1/query'
+                        def query = 'up{job="spring-boot-application"}'
+                        def response = sh(script: "curl -s '${prometheus_url}?query=${URLEncoder.encode(query, "UTF-8")}'", returnStdout: true)
+                        echo "Prometheus Response: ${response}"
+                    }
+                }
             }
         }
         stage('SonarQube Analysis') {
