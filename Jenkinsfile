@@ -18,7 +18,7 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker-compose build'
+                sh 'sudo docker-compose build'
             }
         }
         stage('Login to DockerHub') {
@@ -30,22 +30,22 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                sh 'docker-compose push'
+                sh 'sudo docker-compose push'
             }
         }
  stage('Build JAR') {
             steps {
-                sh 'mvn clean package'
+                sh 'sudo mvn clean package'
             }
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker-compose build'
+                sh 'sudo docker-compose build'
             }
         }
         stage('Deploy') {
             steps {
-                sh 'docker-compose up -d'
+                sh 'sudo docker-compose up -d'
             }
         }
                         stage('Verify Prometheus Metrics') {
