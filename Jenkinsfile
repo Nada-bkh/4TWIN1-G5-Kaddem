@@ -8,8 +8,7 @@ pipeline {
     environment {
         IMAGE_NAME = "benjdidiahabib-4twin1-g5-kaddem"
         IMAGE_TAG = "latest"
-        NEXUS_URL = "localhost:8081"
-        NEXUS_REPOSITORY = "repository/docker-releases"
+        NEXUS_URL = "localhost:5000"
     }
 
     stages {
@@ -38,9 +37,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'nexus-docker-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
                         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${NEXUS_URL}/${NEXUS_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
                         echo $NEXUS_PASS | docker login ${NEXUS_URL} -u $NEXUS_USER --password-stdin
-                        docker push ${NEXUS_URL}/${NEXUS_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${NEXUS_URL}/${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
             }
