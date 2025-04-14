@@ -12,12 +12,7 @@ pipeline {
                 '''
             }
         }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install -DskipTests'
-                sh 'ls -la target/'
-            }
-        }
+
 
 
 
@@ -61,6 +56,12 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar -Dsonar.host.url=http://192.168.33.134:9000 -Dsonar.login=admin -Dsonar.password=admin123'
                 }
+            }
+        }
+               stage('Build') {
+            steps {
+                sh 'mvn clean install -DskipTests'
+                sh 'ls -la target/'
             }
         }
 
