@@ -6,8 +6,8 @@ pipeline {
     }
 
     environment {
+        NEXUS_REPO = 'http://10.0.2.15:8081/repository/maven-snapshots/'
         SONARQUBE = 'MelekKaddem'
-        
     }
 
     stages {
@@ -31,12 +31,17 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nexus') {
-          steps {
-                 sh "mvn clean deploy -DskipTests"
+        stage('Publish to Nexus') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh """
+                        mvn deploy -DskipTests \\
+                        -DaltDeploymentRepository=nexus::default::${NEXUS_REPO} \\
+                        -Dnexus.user=\$NEXUS_USER \\
+                        -Dnexus.password=\$NEXUS_PASS
+                    """
+                }
             }
-
         }
-
     }
 }
