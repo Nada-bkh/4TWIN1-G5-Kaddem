@@ -31,6 +31,15 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+                    steps {
+                        script {
+                            def tag = "kaddem-app:${env.BUILD_NUMBER}"
+                            sh "docker build -t ${tag} ."
+                        }
+                    }
+                }
+
         stage('Publish to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
@@ -43,5 +52,8 @@ pipeline {
                 }
             }
         }
+
+
+
     }
 }
