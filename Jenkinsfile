@@ -18,16 +18,12 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Nexus') {
-            steps {
-                sh 'mvn deploy -X -DskipTests -DaltDeploymentRepository=nexus::default::http://localhost:8081/repository/kaddem-snapshots/ -Dusername=admin -Dpassword=a5670a5129054b41bf5ca1fb76782faf -Dmaven.wagon.httpclient.timeout=600'
-            }
-        }
+
         stage('Docker Build & Push') {
             steps {
                 sh 'docker build -t hamzambarki/kaddem:latest .'
                 sh '''
-                    echo "your_docker_password" | docker login -u "your_docker_username" --password-stdin
+                    echo "dckr_pat_o5Gm4QnItD3YACJRGoppKcCJfm4" | docker login -u "hamzambarki" --password-stdin
                     docker push hamzambarki/kaddem:latest
                 '''
             }
