@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "BenJdidiaHabib-4TWIN1-G5-Kaddem"
+        IMAGE_NAME = "benjdidiahabib-4twin1-g5-kaddem"
         IMAGE_TAG = "latest"
         NEXUS_URL = "localhost:5001"
     }
