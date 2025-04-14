@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git'
+                cleanWs()
+                git branch: 'hamzambarki-4TWIN1-G5-pipeline', url: 'https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git'
             }
         }
         stage('Build') {
