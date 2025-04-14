@@ -4,6 +4,11 @@ pipeline {
     tools {
         maven 'Maven'
     }
+
+    environment {
+        IMAGE_NAME = 'benjdidiahabib-g5-kaddem'
+    }
+
     stages {
 
         stage('Checkout Source Code') {
@@ -29,6 +34,29 @@ pipeline {
         stage('Deploy JAR to Nexus') {
             steps {
                 sh 'mvn deploy'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('API Tests') {
+            steps {
+                sh '''
+                sleep 10
+                curl -X POST http://localhost:8089/kaddem/equipe/add-equipe -H "Content-Type: application/json" -d '{"nomEquipe":"TEST","niveau":"JUNIOR"}'
+                curl -X GET http://localhost:8089/kaddem/equipe/retrieve-all-equipes
+                '''
             }
         }
     }
