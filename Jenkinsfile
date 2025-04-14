@@ -40,7 +40,7 @@ pipeline {
                     }
                 }
 
-        stage('Publish to Nexus') {
+     /*    stage('Publish to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh """
@@ -51,9 +51,20 @@ pipeline {
                     """
                 }
             }
+        } */
+
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        docker tag kaddem-app:${env.BUILD_NUMBER} melekjdidi/kaddem:0.0.1
+                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                        docker push melekjdidi/kaddem:0.0.1
+                    """
+                }
+            }
         }
-
-
 
     }
 }
