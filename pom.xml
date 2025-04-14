@@ -107,8 +107,8 @@
         <distributionManagement>
             <repository>
                 <id>nexus</id>
-                <url>http://localhost:8081/repository/maven-custom-releases/</url>
+                <url>http://localhost:8081/repository/maven-snapshots/</url>
             </repository>
         </distributionManagement>
-    
+
 </project>

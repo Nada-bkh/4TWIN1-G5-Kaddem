@@ -15,7 +15,7 @@
         <mirror>
             <id>nexus</id>
             <mirrorOf>*</mirrorOf>
-            <url>http://localhost:8081/repository/maven-public/</url>
+            <url>http://localhost:8081/repository/maven-publ    ic/</url>
         </mirror>
     </mirrors>
 
