@@ -8,7 +8,7 @@ pipeline {
     environment {
         IMAGE_NAME = "benjdidiahabib-4twin1-g5-kaddem"
         IMAGE_TAG = "latest"
-        NEXUS_URL = "localhost:5000"
+        NEXUS_URL = "localhost:8081/repository/docker-releases"
     }
 
     stages {
