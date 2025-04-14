@@ -36,10 +36,12 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-
-                sh 'mvn sonar:sonar -Dsonar.projectKey=Kaddem-key -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN}'
-            }
+            stage('SonarQube Analysis') {
+                def mvn = tool 'Default Maven';
+                withSonarQubeEnv() {
+                  sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=Kaddem-key"
+                }
+              }
         }
 
         stage('Deploy to Nexus') {
