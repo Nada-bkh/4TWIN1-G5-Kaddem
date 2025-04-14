@@ -25,11 +25,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Nexus') {
-            steps {
-                sh 'mvn deploy -Dmaven.test.skip=true'
-            }
-        }
+
         stage('Build Docker Images') {
             steps {
                 sh 'docker-compose build'
