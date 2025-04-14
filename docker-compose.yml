@@ -1,21 +1,37 @@
+version: '3.8'
+
 services:
   mysql:
-    image: mysql:8
+    image: mysql:8.0
+    container_name: kaddem-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE:
+      MYSQL_DATABASE: kaddem
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
 
   spring:
-    build: .
+    image: hamzambarki/kaddem:latest
+    container_name: hamzambarki-kaddem
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem
+      SERVER_PORT: 8809
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/kaddem?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
     ports:
-      - "8089:8089"
+      - "8809:8809"
     depends_on:
       - mysql
+
+volumes:
+  mysql-data:

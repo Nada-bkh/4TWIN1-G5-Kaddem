@@ -4,13 +4,18 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                git branch: 'hamzambarki-4TWIN1-G5-pipeline', url: 'https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git'
-                sh 'ls -la' // Debug: List files after checkout
+                sh '''
+                    git clone -b hamzambarki-4TWIN1-G5-pipeline --depth 1 https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git .
+                    git fetch --unshallow
+                    git checkout hamzambarki-4TWIN1-G5-pipeline
+                    ls -la
+                '''
             }
         }
         stage('Build') {
             steps {
                 sh 'mvn clean install -DskipTests'
+                sh 'ls -la target/'
             }
         }
         stage('SonarQube Analysis') {
@@ -20,14 +25,31 @@ pipeline {
                 }
             }
         }
-
-        stage('Docker Build & Push') {
+        stage('Deploy to Nexus') {
             steps {
-                sh 'docker build -t hamzambarki/kaddem:latest .'
+                sh 'mvn deploy -Dmaven.test.skip=true'
+            }
+        }
+        stage('Build Docker Images') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+        stage('Login to DockerHub') {
+            steps {
                 sh '''
                     echo "dckr_pat_o5Gm4QnItD3YACJRGoppKcCJfm4" | docker login -u "hamzambarki" --password-stdin
-                    docker push hamzambarki/kaddem:latest
                 '''
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker-compose push'
+            }
+        }
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
     }
