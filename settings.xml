@@ -11,6 +11,13 @@
             <password>root</password>
         </server>
     </servers>
+    <mirrors>
+        <mirror>
+            <id>nexus</id>
+            <mirrorOf>*</mirrorOf>
+            <url>http://localhost:8081/repository/maven-public/</url>
+        </mirror>
+    </mirrors>
 
     <!-- Configuration du dépôt pour deploy -->
     <profiles>

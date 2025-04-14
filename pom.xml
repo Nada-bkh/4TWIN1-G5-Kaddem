@@ -110,5 +110,5 @@
                 <url>http://localhost:8081/repository/maven-custom-releases/</url>
             </repository>
         </distributionManagement>
-
+    
 </project>
