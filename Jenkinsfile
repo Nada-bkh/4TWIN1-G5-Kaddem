@@ -1,13 +1,12 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'      
-        jdk 'Java17'      
-    }
-
     environment {
-        SONAR_TOKEN = credentials('sonar-token')   
+        JAVA_HOME = tool 'Java17'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+        MAVEN_HOME = tool 'Maven'
+        PATH = "${MAVEN_HOME}/bin:${env.PATH}"
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
