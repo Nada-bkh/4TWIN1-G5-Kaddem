@@ -1,15 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        JAVA_HOME = tool 'Java17'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        MAVEN_HOME = tool 'Maven'
-        PATH = "${MAVEN_HOME}/bin:${env.PATH}"
-        SONAR_TOKEN = credentials('sonar-token')
+    tools {
+        maven 'Maven'
     }
-
     stages {
+
         stage('Checkout Source Code') {
             steps {
                 git branch: 'BenJdidiaHabib-4TWIN1-G5', url: 'https://github.com/Nada-bkh/4TWIN1-G5-Kaddem.git'
@@ -25,7 +21,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
+                    sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                 }
             }
         }
@@ -39,13 +35,16 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'Pipeline executed successfully.'
+            mail to: 'benjdidiahabib15@gmail.com',
+                 subject: "Pipeline SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Good Job! The pipeline succeeded."
         }
         failure {
             echo 'Pipeline failed.'
-            mail to: 'your-email@example.com',
-                 subject: "Jenkins Pipeline Failed: ${env.JOB_NAME}",
-                 body: "Build ${env.BUILD_NUMBER} failed: ${env.BUILD_URL}"
+            mail to: 'benjdidiahabib15@gmail.com',
+                 subject: "Pipeline FAILURE - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Unfortunately, the pipeline failed. Check Jenkins for details."
         }
     }
 }
