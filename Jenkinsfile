@@ -30,10 +30,19 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nexus') {
+/*         stage('Deploy to Nexus') {
             steps {
                 sh 'mvn clean deploy -DskipTests '
             }
+        } */
+
+        stage('Deploy to Nexus') {
+          steps {
+            configFileProvider([configFile(fileId: 'nexus-settings', variable: 'MAVEN_SETTINGS')]) {
+              sh 'mvn clean deploy -DskipTests --settings $MAVEN_SETTINGS'
+            }
+          }
         }
+
     }
 }
