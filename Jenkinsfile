@@ -4,11 +4,6 @@ pipeline {
     tools {
         maven 'Maven'
     }
-
-    environment {
-        IMAGE_NAME = 'benjdidiahabib-g5-kaddem'
-    }
-
     stages {
 
         stage('Checkout Source Code') {
@@ -36,26 +31,6 @@ pipeline {
                 sh 'mvn deploy'
             }
         }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $IMAGE_NAME .'
-            }
-        }
-
-        stage('Deploy with Docker Compose') {
-            steps {
-                sh '''
-                docker-compose down || true
-                docker rm -f $(docker ps -aq) || true
-                docker volume prune -f || true
-                docker network prune -f || true
-                docker-compose up -d
-                '''
-            }
-        }
-
- 
     }
 
     post {
