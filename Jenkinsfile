@@ -1,7 +1,7 @@
 pipeline {
     agent {
-            label 'agent'
-        }
+        label 'agent'
+    }
 
     environment {
         SONAR_HOST_URL = 'http://localhost:9000'
@@ -10,6 +10,13 @@ pipeline {
     }
 
     stages {
+        stage('Debug Info') {
+            steps {
+                echo "Using SonarQube at ${SONAR_HOST_URL}"
+                echo "Pushing Docker image to ${DOCKER_REPO}"
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -18,9 +25,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                script {
-                    sh 'mvn clean install'
-                }
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn test'
             }
         }
 
@@ -34,9 +45,7 @@ pipeline {
 
         stage('Deploy to Nexus') {
             steps {
-                script {
-                    sh 'mvn deploy'
-                }
+                sh 'mvn deploy'
             }
         }
 
@@ -45,13 +54,31 @@ pipeline {
                 script {
                     def appName = 'myapp'
                     def imageTag = "${DOCKER_REPO}/${appName}:latest"
-
                     sh "docker build -t ${appName}:latest ."
-
                     sh "docker tag ${appName}:latest ${imageTag}"
-
                     sh "docker push ${imageTag}"
                 }
+            }
+        }
+
+        stage('Start with Docker Compose') {
+            steps {
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('Test Application Endpoint') {
+            steps {
+                sh 'sleep 10'
+                sh 'curl -X POST http://localhost:8080/api/example -H "Content-Type: application/json" -d \'{"key":"value"}\''
+                sh 'curl http://localhost:8080/api/example'
+            }
+        }
+
+        stage('Monitoring Ready') {
+            steps {
+                echo 'Monitoring services should now be visible on Grafana/Prometheus.'
             }
         }
     }
